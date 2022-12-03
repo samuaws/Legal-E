@@ -804,7 +804,6 @@ contract ERC721Metadata is ERC165, ERC721, IERC721Metadata {
    * @param tokenId uint256 ID of the token to query
    */
   function tokenURI(uint256 tokenId) external view returns (string memory) {
-    require(_exists(tokenId));
     return _tokenURIs[tokenId];
   }
 
@@ -970,10 +969,12 @@ contract MyNFT is ERC721Full, ERC721Mintable {
   }
   
 
-  function mintToken(address to, uint256 tokenId, string memory uri) public {
-      mint(to, tokenId);
-      require(_exists(tokenId));
+  function mintToken(uint256 tokenId, string memory uri) public {
+      if(mint(msg.sender, tokenId)){
+
       _setTokenURI(tokenId, uri);
+      }
+
   }
   function burnToken(address owner, uint256 tokenId) public {
       _burn(owner, tokenId);

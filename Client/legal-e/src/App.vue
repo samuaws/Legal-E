@@ -12,14 +12,20 @@
 import { Web3Storage } from "web3.storage";
 // import { ethers } from "ethers";
 export default {
-  name: "App",
-  components: {},
-  data() {
-    return {
-      provider: undefined,
-      fileList: undefined,
-      fd: undefined,
-    };
+  name: 'App',
+  components: {
+  },
+  data(){
+    return{
+      provider : undefined,
+      fileList : undefined,
+      fd : undefined,
+      daiContract : undefined,
+      accounts: undefined,
+      sender : undefined,
+      account : undefined
+
+    }
   },
   mounted() {
     document
@@ -27,32 +33,59 @@ export default {
       .addEventListener("change", async (event) => {
         this.fileList = event.target.files;
         this.fd = new FormData();
-        this.fd.append("image", this.fileList[0]);
-      });
+        this.fd.append("image",this.fileList[0]);
+        console.log(this.fd);
+        
+  })
+},
+  async created(){
+    if(typeof window.ethereum !== "undefined") 
+    {
+      this.accounts = await window.ethereum.request({method:"eth_requestAccounts"})
+
+      this.provider = new ethers.providers.Web3Provider(window.ethereum)
+      this.signer = this.provider.getSigner()
+      this.account = this.accounts[0]
+      var dai = require("../../../artifacts/contracts/NFT.sol/MyNFT.json")
+       this.daiContract = new ethers.Contract("0x5FbDB2315678afecb367f032d93F642f64180aa3", dai.abi, this.signer);
+    }
+    else { 
+      console.log("error");
+    }
+
+
+
+
+   // const signer = provider.getSigner() 
   },
-  async created() {
-    //  this.provider = new ethers.providers.Web3Provider(window.ethereum)
-    // await this.provider.send("eth_requestAccounts", []);
-    // var dai = require("../../../artifacts/contracts/NFT.sol/MyNFT.json")
-    // const daiContract = new ethers.Contract("0x5FbDB2315678afecb367f032d93F642f64180aa3", dai.abi, this.provider);
-    // console.log(daiContract);
-    // const signer = provider.getSigner()
-  },
-  methods: {
-    async storeFiles(files) {
-      const client = new Web3Storage("ejkkbwduewbewbcewbewbcewbccwe");
-      const cid = await client.put(files);
-      console.log("stored files with cid:", cid);
-      return cid;
-    },
-    async showBlocks() {
-      // var blocks = await this.provider.getBlockNumber()
-    },
-    buttonTrigger() {
+  methods : {
+    async  storeFiles (files) {
+  const client = new Web3Storage("ejkkbwduewbewbcewbewbcewbccwe")
+  const cid = await client.put(files)
+  console.log('stored files with cid:', cid)
+  return cid
+},
+buttonTrigger() {
       document.getElementById("FILE").click();
     },
-  },
-};
+  async showBlocks(){
+   // var blocks = await this.provider.getBlockNumber()
+   var uri = {
+    "name" : "test",
+     "URL" : "testurl",
+     "state" : "authentificated"
+   }
+    await this.daiContract.mintToken(0, JSON.stringify(uri));
+    var urireturned
+    setTimeout(async () => {
+          urireturned =  await this.daiContract.tokenURI(0);
+
+    }, 15000);
+    console.log(urireturned);
+    console.log("object");
+  }
+  }
+}
 </script>
 
 <style>
