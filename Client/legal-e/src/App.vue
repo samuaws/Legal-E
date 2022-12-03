@@ -1,27 +1,52 @@
 <template>
-  <div id="app">
-    buiecuwecuoaij
-    <upload-image is="upload-image"
-   :url="forms.create.url"
-   :max_files="5"
-   name="files[]"
-   :resize_enabled="true"
-   :resize_max_width="640"
-   :button_html="forms.create.confirm"
-   :button_class="'button is-primary'"
-></upload-image>
-  </div>
+  <div class="everything">
+    nenn
+    <button v-on:click="this.showBlocks"> print</button>
+
+    okey this is to upload file
+
+    <input
+            type="file"
+            name="FILE"
+            value=""
+            id="FILE"
+          /></div>
 </template>
 
 <script>
 import { Web3Storage } from 'web3.storage'
-import UploadImage from 'vue-upload-image';
+import { ethers } from "ethers";
 export default {
   name: 'App',
   components: {
-    UploadImage,
+  },
+  data(){
+    return{
+      provider : undefined,
+      fileList : undefined,
+      fd : undefined
+    }
   },
     mounted(){
+      document
+      .getElementById("FILE")
+      .addEventListener("change", async (event) => {
+        this.fileList = event.target.files;
+        this.fd = new FormData();
+        this.fd.append("image",this.fileList[0]);
+        
+  })
+},
+  async created(){
+     this.provider = new ethers.providers.Web3Provider(window.ethereum)
+    await this.provider.send("eth_requestAccounts", []);
+    var dai = require("../../../artifacts/contracts/NFT.sol/MyNFT.json")
+    const daiContract = new ethers.Contract("daiAddress", dai.abi, this.provider);
+    console.log(daiContract);
+
+
+
+   // const signer = provider.getSigner() 
   },
   methods : {
     async  storeFiles (files) {
@@ -29,7 +54,11 @@ export default {
   const cid = await client.put(files)
   console.log('stored files with cid:', cid)
   return cid
-}
+},
+  async showBlocks(){
+   // var blocks = await this.provider.getBlockNumber()
+
+  }
   }
 }
 </script>
