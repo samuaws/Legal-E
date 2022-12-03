@@ -41,7 +41,7 @@ export default {
      this.provider = new ethers.providers.Web3Provider(window.ethereum)
     await this.provider.send("eth_requestAccounts", []);
     var dai = require("../../../artifacts/contracts/NFT.sol/MyNFT.json")
-    const daiContract = new ethers.Contract("daiAddress", dai.abi, this.provider);
+    const daiContract = new ethers.Contract("0x5FbDB2315678afecb367f032d93F642f64180aa3", dai.abi, this.provider);
     console.log(daiContract);
 
 
