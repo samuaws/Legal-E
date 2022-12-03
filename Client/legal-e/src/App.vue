@@ -49,6 +49,7 @@ export default {
   })
 },
   async created(){
+    //Set Up the WEB 3 Application
     if(typeof window.ethereum !== "undefined") 
     {
       this.accounts = await window.ethereum.request({method:"eth_requestAccounts"})
@@ -69,8 +70,9 @@ export default {
    // const signer = provider.getSigner() 
   },
   methods : {
+    // Store the token on the decentrelized IPFS storage
     async  storeFiles (files) {
-  const client = new Web3Storage("ejkkbwduewbewbcewbewbcewbccwe")
+  const client = new Web3Storage("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDlEOTFlYjE0NjI0MDI4N2ZhNmQ5RjRhMWNlMDg1NjRmN0E0QTQ2RTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzAwNjU2ODc2MzUsIm5hbWUiOiJmaXJzdCJ9.qdZSqWCi2zwVmfgczfwjZoHgXoJ6ln-8KxRzNLG2-54")
   const cid = await client.put(files)
   console.log('stored files with cid:', cid)
   return cid
@@ -78,6 +80,7 @@ export default {
 buttonTrigger() {
       document.getElementById("FILE").click();
     },
+    //test
   async showBlocks(){
    // var blocks = await this.provider.getBlockNumber()
    var uri = {
