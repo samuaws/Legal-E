@@ -10,7 +10,8 @@
 
 <script>
 import { Web3Storage } from "web3.storage";
-// import { ethers } from "ethers";
+ import { ethers } from "ethers";
+ //import axios from 'axios'
 export default {
   name: 'App',
   components: {
@@ -23,8 +24,8 @@ export default {
       daiContract : undefined,
       accounts: undefined,
       sender : undefined,
-      account : undefined
-
+      account : undefined,
+      files : undefined
     }
   },
   mounted() {
@@ -32,10 +33,19 @@ export default {
       .getElementById("FILE")
       .addEventListener("change", async (event) => {
         this.fileList = event.target.files;
-        this.fd = new FormData();
-        this.fd.append("image",this.fileList[0]);
-        console.log(this.fd);
-        
+        var fd = new FormData();
+        fd.append("image",this.fileList[0]);
+        //var response = await axios.post("http://172.17.0.1:5000/post-image")
+        // this.files = response.data;
+        this.files = fd;
+          var cid = this.storeFiles(this.files);
+        console.log("https://ipfs.io/ipfs/"+ cid);
+        var uri = {
+    "name" : "token",
+     "URL" : cid,
+     "state" : "authentificated"
+   }
+    await this.daiContract.mintToken(0, JSON.stringify(uri));
   })
 },
   async created(){
